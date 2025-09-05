@@ -11,17 +11,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 专门安装和设置 pnpm（最佳方案）
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8 # 指定 pnpm 主版本，推荐使用稳定的 8.x 版本
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'  # 缓存 pnpm 依赖，提升后续构建速度
-
-      - name: Install pnpm
-        run: npm install -g pnpm@latest  # 全局安装 pnpm
+          cache: 'pnpm' # 配置 pnpm 依赖缓存，大幅加速后续构建
 
       - name: Install dependencies
-        run: pnpm install  # 现在 pnpm 命令应该可用了
+        run: pnpm install
 
       - name: Build with VitePress
         run: pnpm run docs:build
@@ -30,4 +33,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/.vitepress/dist  # 请确认此路径与你的项目结构匹配
+          publish_dir: docs/.vitepress/dist # 请确认此路径与你的项目结构匹配
