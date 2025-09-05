@@ -2,7 +2,7 @@ name: Deploy VitePress to GitHub Pages
 
 on:
   push:
-    branches: [main]  # 在推送到 main 分支时触发
+    branches: [main]
 
 jobs:
   deploy:
@@ -11,14 +11,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js and pnpm
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'  # 关键配置：自动安装并设置 pnpm 缓存
+          cache: 'pnpm'  # 缓存 pnpm 依赖，提升后续构建速度
+
+      - name: Install pnpm
+        run: npm install -g pnpm@latest  # 全局安装 pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install  # 现在 pnpm 命令应该可用了
 
       - name: Build with VitePress
         run: pnpm run docs:build
@@ -27,4 +30,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/.vitepress/dist
+          publish_dir: docs/.vitepress/dist  # 请确认此路径与你的项目结构匹配
