@@ -2,29 +2,29 @@ name: Deploy VitePress to GitHub Pages
 
 on:
   push:
-    branches: [ main ]  # 设置为你存放源码的分支，通常是 main 或 master
+    branches: [main]  # 在推送到 main 分支时触发
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # 使用最新稳定版
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js and pnpm
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # 建议使用 LTS 版本
-          cache: 'pnpm' # 根据你的包管理器更改，可选 'npm', 'yarn'
+          node-version: '20'
+          cache: 'pnpm'  # 关键配置：自动安装并设置 pnpm 缓存
 
       - name: Install dependencies
-        run: pnpm install # 或 npm install / yarn install
+        run: pnpm install
 
       - name: Build with VitePress
-        run: pnpm run docs:build # 确保与你的 package.json 中的脚本一致
+        run: pnpm run docs:build
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3 # 一个专门用于部署到 GitHub Pages 的流行 Action
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # 使用 GitHub 自动提供的 token
-          publish_dir: docs/.vitepress/dist # 重要：指向你 VitePress 站点的构建输出目录
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/.vitepress/dist
